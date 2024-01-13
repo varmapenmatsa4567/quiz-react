@@ -1,15 +1,46 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Option from './Option'
 import { shuffledQuestions } from '../data/questions';
 import Result from './Result';
+import { useParams } from 'react-router-dom';
+import database from '../appwrite.config';
+import { Query } from 'appwrite';
 
-const qsns = shuffledQuestions();
+// const qsns = shuffledQuestions();
 
 const Quiz = () => {
+  const [qsns, setQsns] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answer, setAnswer] = useState('');
   const [wrong, setWrong] = useState('');
   const [score, setScore] = useState(0);
+  const { id } = useParams();
+  const [title, setTitle] = useState('');
+
+  useEffect(() => {
+    database.listDocuments(
+      '65a230973c351e1620d9',
+      '65a2b9cbb3bfa7ca38d1',
+      [
+        Query.equal('$id', id),
+      ],
+    ).then((response) => {
+      console.log(response);
+      setTitle(response.documents[0].title);
+    }
+    )
+
+    database.listDocuments(
+      '65a230973c351e1620d9',
+      '65a2ba2824be8bd209e0',
+      [
+        Query.equal('did', id),
+      ],
+    ).then((response) => {
+      setQsns(response.documents);
+    }
+    )
+  }, [])
 
   const resetQuiz = () => {
     setCurrentQuestion(0);
@@ -36,7 +67,7 @@ const Quiz = () => {
   return (
     <div className='bg-[#0B2055] h-screen w-screen flex justify-center items-center'>
         <div className='bg-white rounded-md p-8 w-2/5'>
-            <h1 className='text-center text-2xl font-semibold'>Simple Quiz</h1>
+            <h1 className='text-center text-2xl font-semibold'>{title}</h1>
             <div className='border-b border-black my-2'></div>
             {qsns && qsns.length > currentQuestion && <div>
               <h1 className='text-lg font-medium'>{currentQuestion+1}. {qsns[currentQuestion].question}</h1>

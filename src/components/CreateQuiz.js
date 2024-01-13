@@ -16,7 +16,7 @@ const CreateQuiz = () => {
         setLoading(true);
         database.createDocument(
             '65a230973c351e1620d9',
-            '65a2317b42f729a01abc',
+            '65a2b9cbb3bfa7ca38d1',
             ID.unique(),
             {
                 title: title,
@@ -27,7 +27,7 @@ const CreateQuiz = () => {
             questions.forEach((question) => {
                 database.createDocument(
                     '65a230973c351e1620d9',
-                    '65a232764a83274744bb',
+                    '65a2ba2824be8bd209e0',
                     ID.unique(),
                     {
                         question: question.question,
