@@ -2,13 +2,18 @@ import React, { useState } from 'react'
 import CreateOption from './CreateOption'
 import database from '../appwrite.config';
 import { ID } from 'appwrite';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import { useNavigate } from 'react-router-dom';
 
 const CreateQuiz = () => {
     const [questions, setQuestions] = useState([]);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const createQuiz = () => {
+        setLoading(true);
         database.createDocument(
             '65a230973c351e1620d9',
             '65a2317b42f729a01abc',
@@ -32,6 +37,8 @@ const CreateQuiz = () => {
                     }
                 )
             })
+            setLoading(false);
+            navigate('/');
         })
     }
 
@@ -83,8 +90,12 @@ const CreateQuiz = () => {
 
     // console.log(questions);
   return (
-    <div className='bg-[#EFEBF7] min-h-screen w-screen flex justify-center'>
-         <div className='w-1/2 py-4 flex flex-col gap-2'>
+    <div className='bg-[#EFEBF7] min-h-screen w-screen flex justify-center relative'>
+        {loading && <div className='absolute w-screen h-screen bg-black bg-opacity-70 flex justify-center items-center'>
+            <AiOutlineLoading3Quarters className='text-5xl text-white animate-spin'/>
+        </div>}
+
+        <div className='w-1/2 py-4 flex flex-col gap-2'>
             <div className='flex flex-col gap-2 w-full bg-white p-6 rounded-md border border-gray-300 shadow-sm'>
                 <input value={title} onChange={(e) => setTitle(e.target.value)} className='w-full focus:border-blue-900 focus:border-b-2 border-b border-gray-300 outline-none text-3xl py-2' type='text' placeholder='Quiz Title'/>
                 <input value={description} onChange={(e) => setDescription(e.target.value)} className='w-full focus:border-blue-900 focus:border-b-2 border-b border-gray-300 outline-none py-1' type='text' placeholder='Quiz Description'/>
@@ -106,9 +117,7 @@ const CreateQuiz = () => {
                 <button onClick={addQuestion} className='bg-gray-300 self-center px-3 p-1 rounded-md'>+ Add Question</button>
                 <button onClick={createQuiz} className='bg-gray-300 self-center px-3 p-1 rounded-md'>Create Quiz</button>
             </div>
-            
-            
-         </div>
+        </div>
     </div>
   )
 }
